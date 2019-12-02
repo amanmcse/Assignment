@@ -1,5 +1,6 @@
 package ImageHoster.controller;
 
+import ImageHoster.model.Comment;
 import ImageHoster.model.Image;
 import ImageHoster.model.Tag;
 import ImageHoster.model.User;
@@ -49,6 +50,7 @@ public class ImageController {
     public String showImage(@PathVariable(name = "imageId") Integer imageId, @PathVariable(name = "title") String title, Model model) throws NullPointerException {
         Image image = imageService.getImage(imageId);
         model.addAttribute("image", image);
+        model.addAttribute("comments", image.getComments());
         try {
             List<Tag> tags = image.getTags();
             if (tags.isEmpty()) {
@@ -59,6 +61,7 @@ public class ImageController {
             e.printStackTrace();
             model.addAttribute("image", "");
         }
+//        model.addAttribute("comment", new Comment());
         return "images/image";
     }
 
@@ -116,6 +119,7 @@ public class ImageController {
             model.addAttribute("editError", "Only the owner of the image can edit the image");
             model.addAttribute("image", image);
             model.addAttribute("tags", tags);
+            model.addAttribute("comments", image.getComments());
             return "images/image";
         }
 
@@ -173,6 +177,7 @@ public class ImageController {
             model.addAttribute("tags", currentImage.getTags());
             model.addAttribute("image", currentImage);
             model.addAttribute("deleteError", "Only the owner of the image can delete the image");
+            model.addAttribute("comments", currentImage.getComments());
             return "images/image";
         }
 

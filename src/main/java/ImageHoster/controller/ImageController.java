@@ -49,7 +49,16 @@ public class ImageController {
     public String showImage(@PathVariable(name = "imageId") Integer imageId, @PathVariable(name = "title") String title, Model model) throws NullPointerException {
         Image image = imageService.getImage(imageId);
         model.addAttribute("image", image);
-        model.addAttribute("image", "");
+        try {
+            List<Tag> tags = image.getTags();
+            if (tags.isEmpty()) {
+                tags.add(new Tag());
+            }
+            model.addAttribute("tags", tags);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            model.addAttribute("image", "");
+        }
         return "images/image";
     }
 

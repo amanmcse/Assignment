@@ -45,11 +45,20 @@ public class ImageController {
     //Also now you need to add the tags of an image in the Model type object
     //Here a list of tags is added in the Model type object
     //this list is then sent to 'images/image.html' file and the tags are displayed
-    @RequestMapping("/images/{title}")
-    public String showImage(@PathVariable("title") String title, Model model) {
-        Image image = imageService.getImageByTitle(title);
+    @RequestMapping("/images/{imageId}/{title}")
+    public String showImage(@PathVariable(name = "imageId") Integer imageId, @PathVariable(name = "title") String title, Model model) throws NullPointerException {
+        Image image = imageService.getImage(imageId);
         model.addAttribute("image", image);
-        model.addAttribute("tags", image.getTags());
+        try {
+            List<Tag> tags = image.getTags();
+            if (tags.isEmpty()) {
+                tags.add(new Tag());
+            }
+            model.addAttribute("tags", tags);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            model.addAttribute("image", "");
+        }
         return "images/image";
     }
 
